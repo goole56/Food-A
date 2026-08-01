@@ -1,0 +1,8 @@
+{
+  "name": "ATIK ULLAH Food Delivery",
+  "description": "Premium 3D food ordering and delivery app with customer and admin portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
