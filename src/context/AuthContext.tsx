@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { User, Language } from '../types';
 
 interface AuthContextType {
@@ -24,7 +24,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
-  const login = (email: string, role: 'customer' | 'admin') => {
+  // Performance optimization: useCallback maintains action handler reference stability across re-renders
+  const login = useCallback((email: string, role: 'customer' | 'admin') => {
     const isAtik = email.toLowerCase() === 'atik@admin.com';
     setUser({
       id: Math.random().toString(36).substring(7),
@@ -34,20 +35,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       language: 'en',
       phone: '',
     });
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
-  };
+  }, []);
 
-  const updateProfile = (name: string, phone: string, language: Language) => {
-    if (user) {
-      setUser({ ...user, name, phone, language });
-    }
-  };
+  const updateProfile = useCallback((name: string, phone: string, language: Language) => {
+    setUser((prevUser) => (prevUser ? { ...prevUser, name, phone, language } : null));
+  }, []);
+
+  // Performance optimization: useMemo prevents AuthContext value reference change when user hasn't changed
+  const value = useMemo(
+    () => ({ user, login, logout, updateProfile }),
+    [user, login, logout, updateProfile]
+  );
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateProfile }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
