@@ -1,0 +1,3 @@
+## 2025-05-18 - Route-Level Code Splitting for Large Initial Bundles
+**Learning:** Monolithic route imports caused Vite to package all heavy feature dashboards (including Recharts and Google Maps wrappers) into a single 1.39 MB entry bundle (`index.js`). Using `React.lazy` with named component resolution (`.then(m => ({ default: m.Component }))`) cleanly separated heavy page components into async chunks, reducing the initial bundle size by ~68.5% (down to 439 kB).
+**Action:** Always implement `React.lazy` on top-level routes when bundling heavy vendor dependencies like charts or 3D canvas libraries to keep the initial page load lightweight.
