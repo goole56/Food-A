@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { StoreProvider } from './context/StoreContext';
 import { Layout } from './components/Layout';
-import { Login } from './pages/auth/Login';
-import { Register } from './pages/auth/Register';
-import { ForgotPassword } from './pages/auth/ForgotPassword';
-import { CustomerDashboard } from './pages/customer/CustomerDashboard';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
+
+// Lazy loading route components to reduce initial bundle size and speed up initial page load
+const Login = lazy(() => import('./pages/auth/Login').then(m => ({ default: m.Login })));
+const Register = lazy(() => import('./pages/auth/Register').then(m => ({ default: m.Register })));
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword').then(m => ({ default: m.ForgotPassword })));
+const CustomerDashboard = lazy(() => import('./pages/customer/CustomerDashboard').then(m => ({ default: m.CustomerDashboard })));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+
+const PageLoading = () => (
+  <div className="min-h-[50vh] flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-brand-pink border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode, role: 'customer' | 'admin' }) {
   const { user } = useAuth();
@@ -38,16 +46,18 @@ export default function App() {
             <Route path="/" element={<Layout />}>
               {/* Auth Routes */}
               <Route index element={<RootRedirect />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="forgot-password" element={<ForgotPassword />} />
+              <Route path="login" element={<Suspense fallback={<PageLoading />}><Login /></Suspense>} />
+              <Route path="register" element={<Suspense fallback={<PageLoading />}><Register /></Suspense>} />
+              <Route path="forgot-password" element={<Suspense fallback={<PageLoading />}><ForgotPassword /></Suspense>} />
               
               {/* Customer Routes */}
               <Route 
                 path="customer/*" 
                 element={
                   <ProtectedRoute role="customer">
-                    <CustomerDashboard />
+                    <Suspense fallback={<PageLoading />}>
+                      <CustomerDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 } 
               />
@@ -57,7 +67,9 @@ export default function App() {
                 path="admin/*" 
                 element={
                   <ProtectedRoute role="admin">
-                    <AdminDashboard />
+                    <Suspense fallback={<PageLoading />}>
+                      <AdminDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 } 
               />
