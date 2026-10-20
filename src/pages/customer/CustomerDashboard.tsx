@@ -213,7 +213,9 @@ function FoodMenu() {
                 <img src={selectedFood.image} alt={selectedFood.name} className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setSelectedFood(null)}
-                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white transition-colors"
+                  aria-label="Close details"
+                  title="Close"
+                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                 >
                   <X size={20} />
                 </button>
@@ -893,10 +895,18 @@ function Orders() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <button className="p-3 bg-brand-card border border-brand-border rounded-full hover:text-brand-pink hover:border-brand-pink transition-colors shadow-sm">
+                            <button
+                              aria-label="Message delivery partner"
+                              title="Message delivery partner"
+                              className="p-3 bg-brand-card border border-brand-border rounded-full hover:text-brand-pink hover:border-brand-pink transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                            >
                               <MessageSquare size={18} />
                             </button>
-                            <button className="p-3 bg-brand-pink text-white rounded-full hover:bg-brand-pink/90 transition-colors shadow-md shadow-brand-pink/20">
+                            <button
+                              aria-label="Call delivery partner"
+                              title="Call delivery partner"
+                              className="p-3 bg-brand-pink text-white rounded-full hover:bg-brand-pink/90 transition-colors shadow-md shadow-brand-pink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                            >
                               <Phone size={18} />
                             </button>
                           </div>

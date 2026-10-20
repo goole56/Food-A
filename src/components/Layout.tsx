@@ -61,13 +61,19 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
+                      <button
+                        aria-label="Favorites"
+                        title="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                      >
                         <Heart size={24} />
                       </button>
                       
                       <button 
                         onClick={() => navigate('/customer/cart')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                        aria-label={`Shopping Cart (${totalItems} ${totalItems === 1 ? 'item' : 'items'})`}
+                        title="Shopping Cart"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                       >
                         <ShoppingBag size={24} />
                         {totalItems > 0 && (
@@ -104,13 +110,17 @@ export function Layout() {
                       </div>
                       <button 
                         onClick={() => navigate('/admin')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors"
+                        aria-label="Admin Dashboard"
+                        title="Admin Dashboard"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                       >
                         <LayoutDashboard size={24} />
                       </button>
                       <button 
                         onClick={handleLogout}
-                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
+                        aria-label="Log Out"
+                        title="Log Out"
+                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                       >
                         <LogOut size={24} />
                       </button>
