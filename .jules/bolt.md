@@ -1,0 +1,3 @@
+## 2025-05-18 - Route Code-Splitting & Heavy Library Dynamic Imports
+**Learning:** Monolithic initial JS bundle size was over 1.36 MB because heavy packages (`recharts` in AdminDashboard, `jsPDF` in CustomerDashboard) were imported synchronously at top level. Code-splitting page routes with `React.lazy()` and moving `jsPDF` imports inside `downloadInvoice()` reduced entry bundle size by ~70% (from 1,361 kB to 408 kB) and eliminated chunk size warnings.
+**Action:** Always lazy-load admin/sub-route modules with `React.lazy()`, and defer heavy utility imports (like PDF generators) to user interaction event handlers.
