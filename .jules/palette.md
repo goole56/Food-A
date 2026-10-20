@@ -1,0 +1,3 @@
+## 2025-05-18 - Navigation & Modal Icon Button Accessibility
+**Learning:** Icon-only navigation buttons (e.g. Shopping Bag, Heart, Admin Dashboard, Rider Contact) lack screen reader accessible names and focus indicators when using custom icons without text labels. Adding pluralized ARIA labels (e.g., `Shopping Cart (X items)`), native `title` attributes for tooltips, and `focus-visible:ring-2` ensures keyboard and screen reader accessibility without affecting visual layout.
+**Action:** Always check icon-only `<button>` tags for `aria-label`, `title`, and `focus-visible` ring styling across header and modal components.
