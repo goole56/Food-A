@@ -22,9 +22,16 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-brand-bg text-brand-text font-sans selection:bg-brand-pink/30 overflow-hidden relative flex flex-col pb-16 sm:pb-0">
-      
+      {/* Skip link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-3 focus:m-2 focus:bg-white focus:text-brand-pink focus:font-bold border border-brand-pink rounded-lg shadow-md"
+      >
+        Skip to main content
+      </a>
+
       {/* Navbar */}
-      <nav className="relative z-50 bg-white border-b border-brand-border sticky top-0 shadow-sm">
+      <nav className="relative z-50 bg-white border-b border-brand-border sticky top-0 shadow-sm" aria-label="Main navigation">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 sm:h-20 items-center">
             
@@ -61,13 +68,19 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
+                      <button
+                        aria-label="Favorites"
+                        title="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg transition-colors relative"
+                      >
                         <Heart size={24} />
                       </button>
                       
                       <button 
                         onClick={() => navigate('/customer/cart')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                        aria-label={totalItems > 0 ? `Shopping cart, ${totalItems} item${totalItems === 1 ? '' : 's'}` : 'Shopping cart'}
+                        title="Shopping Cart"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg transition-colors relative"
                       >
                         <ShoppingBag size={24} />
                         {totalItems > 0 && (
@@ -81,13 +94,13 @@ export function Layout() {
                       <div className="hidden sm:flex items-center gap-4 border-l border-brand-border pl-6 ml-2">
                         <button 
                           onClick={() => navigate('/customer/orders')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg p-1 transition-colors"
                         >
                           <FileText size={20} /> Orders
                         </button>
                         <button 
                           onClick={() => navigate('/customer/profile')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg p-1 transition-colors"
                         >
                           <UserCircle size={20} /> Profile
                         </button>
@@ -104,13 +117,17 @@ export function Layout() {
                       </div>
                       <button 
                         onClick={() => navigate('/admin')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors"
+                        aria-label="Admin Dashboard"
+                        title="Admin Dashboard"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg transition-colors"
                       >
                         <LayoutDashboard size={24} />
                       </button>
                       <button 
                         onClick={handleLogout}
-                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
+                        aria-label="Log out"
+                        title="Log out"
+                        className="p-2 text-brand-text-muted hover:text-red-500 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg transition-colors"
                       >
                         <LogOut size={24} />
                       </button>
@@ -129,7 +146,7 @@ export function Layout() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 relative z-10 p-0 sm:p-6 lg:p-8 overflow-y-auto">
+      <main id="main-content" className="flex-1 relative z-10 p-0 sm:p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto h-full pb-20 sm:pb-0">
           <Outlet />
         </div>
@@ -137,10 +154,10 @@ export function Layout() {
 
       {/* Mobile Bottom Navigation (Customer) */}
       {user && user.role === 'customer' && (
-        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-brand-border flex justify-around items-center p-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <nav aria-label="Mobile navigation" className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-brand-border flex justify-around items-center p-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           <button 
             onClick={() => navigate('/customer')}
-            className={`p-2 flex flex-col items-center gap-1 ${location.pathname === '/customer' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
+            className={`p-2 flex flex-col items-center gap-1 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg ${location.pathname === '/customer' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
           >
             <Home size={24} className={location.pathname === '/customer' ? 'fill-current' : ''} />
             <span className="text-[10px] font-bold">Home</span>
@@ -148,7 +165,7 @@ export function Layout() {
           
           <button 
             onClick={() => navigate('/customer/search')}
-            className={`p-2 flex flex-col items-center gap-1 ${location.pathname === '/customer/search' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
+            className={`p-2 flex flex-col items-center gap-1 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg ${location.pathname === '/customer/search' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
           >
             <Search size={24} />
             <span className="text-[10px] font-bold">Search</span>
@@ -156,7 +173,7 @@ export function Layout() {
 
           <button 
             onClick={() => navigate('/customer/orders')}
-            className={`p-2 flex flex-col items-center gap-1 ${location.pathname === '/customer/orders' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
+            className={`p-2 flex flex-col items-center gap-1 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg ${location.pathname === '/customer/orders' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
           >
             <FileText size={24} className={location.pathname === '/customer/orders' ? 'fill-current' : ''} />
             <span className="text-[10px] font-bold">Orders</span>
@@ -164,7 +181,7 @@ export function Layout() {
 
           <button 
             onClick={() => navigate('/customer/profile')}
-            className={`p-2 flex flex-col items-center gap-1 ${location.pathname === '/customer/profile' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
+            className={`p-2 flex flex-col items-center gap-1 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg ${location.pathname === '/customer/profile' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
           >
             <UserCircle size={24} className={location.pathname === '/customer/profile' ? 'fill-current' : ''} />
             <span className="text-[10px] font-bold">Profile</span>
@@ -174,17 +191,17 @@ export function Layout() {
 
       {/* Mobile Bottom Navigation (Admin) */}
       {user && user.role === 'admin' && (
-        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-brand-border flex justify-around items-center p-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <nav aria-label="Mobile navigation" className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-brand-border flex justify-around items-center p-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           <button 
             onClick={() => navigate('/admin')}
-            className={`p-2 flex flex-col items-center gap-1 ${location.pathname === '/admin' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
+            className={`p-2 flex flex-col items-center gap-1 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg ${location.pathname === '/admin' ? 'text-brand-pink' : 'text-brand-text-muted'}`}
           >
             <LayoutDashboard size={22} />
             <span className="text-[10px] font-bold">{t('admin')}</span>
           </button>
           <button 
             onClick={handleLogout}
-            className="p-2 flex flex-col items-center gap-1 text-red-500"
+            className="p-2 flex flex-col items-center gap-1 text-red-500 focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:outline-none rounded-lg"
           >
             <LogOut size={22} />
             <span className="text-[10px] font-bold">{t('logout')}</span>
