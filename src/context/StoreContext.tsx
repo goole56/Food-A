@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Order, CartItem, Food } from '../types';
 
 interface StoreContextType {
@@ -25,7 +25,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('food_app_orders', JSON.stringify(orders));
   }, [orders]);
 
-  const addToCart = (food: Food) => {
+  // Performance Optimization: Wrap action handlers in useCallback to maintain stable function references.
+  // This prevents downstream consumers of StoreContext from receiving new function references on every render.
+  const addToCart = useCallback((food: Food) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.food.id === food.id);
       if (existing) {
@@ -35,44 +37,54 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       return [...prev, { food, quantity: 1 }];
     });
-  };
+  }, []);
 
-  const removeFromCart = (foodId: string) => {
+  const removeFromCart = useCallback((foodId: string) => {
     setCart((prev) => prev.filter((item) => item.food.id !== foodId));
-  };
+  }, []);
 
-  const clearCart = () => setCart([]);
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
 
-  const reorder = (items: CartItem[]) => {
+  const reorder = useCallback((items: CartItem[]) => {
     setCart(items);
-  };
+  }, []);
 
-  const placeOrder = (customerId: string, customerName: string) => {
-    if (cart.length === 0) return;
-    const total = cart.reduce((sum, item) => sum + item.food.price * item.quantity, 0);
-    const newOrder: Order = {
-      id: `ORD-${Math.floor(Math.random() * 10000)}`,
-      customerId,
-      customerName,
-      items: cart,
-      total,
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
-    setOrders((prev) => [newOrder, ...prev]);
-    clearCart();
-  };
+  const placeOrder = useCallback(
+    (customerId: string, customerName: string) => {
+      if (cart.length === 0) return;
+      const total = cart.reduce((sum, item) => sum + item.food.price * item.quantity, 0);
+      const newOrder: Order = {
+        id: `ORD-${Math.floor(Math.random() * 10000)}`,
+        customerId,
+        customerName,
+        items: cart,
+        total,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      setOrders((prev) => [newOrder, ...prev]);
+      setCart([]);
+    },
+    [cart]
+  );
 
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
+  const updateOrderStatus = useCallback((orderId: string, status: Order['status']) => {
     setOrders((prev) =>
       prev.map((order) => (order.id === orderId ? { ...order, status } : order))
     );
-  };
+  }, []);
+
+  // Performance Optimization: Memoize context value object to prevent re-rendering all subscribed context
+  // components when parent component re-renders or when state values haven't changed.
+  const value = useMemo(
+    () => ({ cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus }),
+    [cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus]
+  );
 
   return (
-    <StoreContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus }}
-    >
+    <StoreContext.Provider value={value}>
       {children}
     </StoreContext.Provider>
   );
