@@ -1,0 +1,3 @@
+## 2025-05-18 - Header Navigation Accessibility and Focus Indicators
+**Learning:** Interactive header elements (such as brand logo and location selectors) in custom layouts are frequently built using `div` with `onClick`, making them unreachable for screen reader users and keyboard navigation. Additionally, icon-only header buttons often lack explicit `aria-label` attributes and visible focus states.
+**Action:** Always replace click-handler `div`s in layout headers with semantic `<button>` elements, provide descriptive `aria-label`s, and apply `focus-visible:ring-2 focus-visible:ring-brand-pink` styling for key navigation pathways.
