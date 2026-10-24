@@ -61,13 +61,19 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
+                      <button
+                        aria-label="Favorites"
+                        title="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg transition-colors relative"
+                      >
                         <Heart size={24} />
                       </button>
                       
                       <button 
+                        aria-label={`Shopping cart with ${totalItems} items`}
+                        title="Shopping Cart"
                         onClick={() => navigate('/customer/cart')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg transition-colors relative"
                       >
                         <ShoppingBag size={24} />
                         {totalItems > 0 && (
@@ -81,13 +87,13 @@ export function Layout() {
                       <div className="hidden sm:flex items-center gap-4 border-l border-brand-border pl-6 ml-2">
                         <button 
                           onClick={() => navigate('/customer/orders')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg px-2 py-1 transition-colors"
                         >
                           <FileText size={20} /> Orders
                         </button>
                         <button 
                           onClick={() => navigate('/customer/profile')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg px-2 py-1 transition-colors"
                         >
                           <UserCircle size={20} /> Profile
                         </button>
@@ -103,14 +109,18 @@ export function Layout() {
                         <span className="text-xs px-2 py-0.5 bg-brand-pink/10 text-brand-pink rounded-full ml-2 uppercase font-bold">Admin</span>
                       </div>
                       <button 
+                        aria-label="Admin Dashboard"
+                        title="Admin Dashboard"
                         onClick={() => navigate('/admin')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors"
+                        className="p-2 text-brand-text hover:text-brand-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg transition-colors"
                       >
                         <LayoutDashboard size={24} />
                       </button>
                       <button 
+                        aria-label="Log out"
+                        title="Log out"
                         onClick={handleLogout}
-                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
+                        className="p-2 text-brand-text-muted hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg transition-colors"
                       >
                         <LogOut size={24} />
                       </button>
