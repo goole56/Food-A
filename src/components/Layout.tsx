@@ -61,12 +61,16 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
+                      <button
+                        aria-label="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                      >
                         <Heart size={24} />
                       </button>
                       
                       <button 
                         onClick={() => navigate('/customer/cart')}
+                        aria-label={totalItems > 0 ? `Shopping cart, ${totalItems} item${totalItems === 1 ? '' : 's'}` : 'Shopping cart'}
                         className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
                       >
                         <ShoppingBag size={24} />
@@ -104,12 +108,14 @@ export function Layout() {
                       </div>
                       <button 
                         onClick={() => navigate('/admin')}
+                        aria-label="Admin Dashboard"
                         className="p-2 text-brand-text hover:text-brand-pink transition-colors"
                       >
                         <LayoutDashboard size={24} />
                       </button>
                       <button 
                         onClick={handleLogout}
+                        aria-label="Log Out"
                         className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
                       >
                         <LogOut size={24} />
