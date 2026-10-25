@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Order, CartItem, Food } from '../types';
 
 interface StoreContextType {
@@ -25,7 +25,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('food_app_orders', JSON.stringify(orders));
   }, [orders]);
 
-  const addToCart = (food: Food) => {
+  // Performance Optimization: Memoize store context actions with useCallback to maintain stable function references
+  const addToCart = useCallback((food: Food) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.food.id === food.id);
       if (existing) {
@@ -35,19 +36,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       return [...prev, { food, quantity: 1 }];
     });
-  };
+  }, []);
 
-  const removeFromCart = (foodId: string) => {
+  const removeFromCart = useCallback((foodId: string) => {
     setCart((prev) => prev.filter((item) => item.food.id !== foodId));
-  };
+  }, []);
 
-  const clearCart = () => setCart([]);
+  const clearCart = useCallback(() => setCart([]), []);
 
-  const reorder = (items: CartItem[]) => {
+  const reorder = useCallback((items: CartItem[]) => {
     setCart(items);
-  };
+  }, []);
 
-  const placeOrder = (customerId: string, customerName: string) => {
+  const placeOrder = useCallback((customerId: string, customerName: string) => {
     if (cart.length === 0) return;
     const total = cart.reduce((sum, item) => sum + item.food.price * item.quantity, 0);
     const newOrder: Order = {
@@ -60,19 +61,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       createdAt: new Date().toISOString(),
     };
     setOrders((prev) => [newOrder, ...prev]);
-    clearCart();
-  };
+    setCart([]);
+  }, [cart]);
 
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
+  const updateOrderStatus = useCallback((orderId: string, status: Order['status']) => {
     setOrders((prev) =>
       prev.map((order) => (order.id === orderId ? { ...order, status } : order))
     );
-  };
+  }, []);
+
+  // Performance Optimization: Memoize context provider value object to prevent unneeded consumer re-renders
+  const value = useMemo(
+    () => ({ cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus }),
+    [cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus]
+  );
 
   return (
-    <StoreContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, reorder, orders, placeOrder, updateOrderStatus }}
-    >
+    <StoreContext.Provider value={value}>
       {children}
     </StoreContext.Provider>
   );
