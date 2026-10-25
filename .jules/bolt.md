@@ -1,0 +1,3 @@
+## 2026-10-25 - React Route Code Splitting & Context Memoization
+**Learning:** Heavy vendor libraries (Recharts, jsPDF, Three.js, Maps) in route subtrees inflate initial bundle size if statically imported. Code splitting routes using `React.lazy()` reduces initial bundle size by over 68% (from ~1.39MB to ~439KB). Also, when memoizing context actions with `useCallback`, state update side effects must remain outside functional state updater callbacks to prevent duplicate executions in concurrent React environments.
+**Action:** Use `React.lazy()` for route components with large vendor dependencies and ensure React state updaters remain pure.
