@@ -1,0 +1,3 @@
+## 2025-05-18 - Navigation Bar Accessibility & Focus Visibility
+**Learning:** Icon-only navigation buttons in high-density app headers (like Shopping Bag, Favorites, and Mobile Nav items) require descriptive ARIA labels, dynamic state reporting (e.g. cart item counts), and explicit `focus-visible` ring indicators to enable seamless screen reader and keyboard navigation without breaking standard pointer visuals.
+**Action:** Always add `aria-label`, dynamic badge descriptions, `aria-current="page"` on active navigation items, and `focus-visible:ring-2 focus-visible:ring-brand-pink focus:outline-none` classes on custom interactive buttons.
