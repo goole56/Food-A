@@ -61,13 +61,17 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
+                      <button
+                        aria-label="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg"
+                      >
                         <Heart size={24} />
                       </button>
                       
                       <button 
+                        aria-label={`Shopping cart with ${totalItems} item${totalItems === 1 ? '' : 's'}`}
                         onClick={() => navigate('/customer/cart')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg"
                       >
                         <ShoppingBag size={24} />
                         {totalItems > 0 && (
@@ -103,14 +107,16 @@ export function Layout() {
                         <span className="text-xs px-2 py-0.5 bg-brand-pink/10 text-brand-pink rounded-full ml-2 uppercase font-bold">Admin</span>
                       </div>
                       <button 
+                        aria-label="Admin Dashboard"
                         onClick={() => navigate('/admin')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors"
+                        className="p-2 text-brand-text hover:text-brand-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg"
                       >
                         <LayoutDashboard size={24} />
                       </button>
                       <button 
+                        aria-label="Log out"
                         onClick={handleLogout}
-                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
+                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg"
                       >
                         <LogOut size={24} />
                       </button>
