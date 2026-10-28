@@ -1,0 +1,3 @@
+## 2026-10-28 - Avoid side-effects inside functional state updaters during memoization
+**Learning:** When refactoring callback functions for `useCallback` inside React Contexts, avoid calling secondary state setters (like `setOrders`) inside a functional state updater (like `setCart(currentCart => ...)`). React state updaters must be pure, and side-effects inside them will execute twice in Strict Mode leading to duplicate actions (e.g. duplicate orders).
+**Action:** Always keep state updates at top-level inside callbacks and include necessary dependencies in `useCallback` dependency arrays rather than nesting state setters inside updaters.
