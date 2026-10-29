@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Language } from '../types';
 
 export const translations = {
@@ -95,7 +96,10 @@ export const translations = {
 
 export const useTranslation = (language?: Language) => {
   const lang = language || 'en';
-  return (key: keyof typeof translations['en']) => {
-    return translations[lang][key] || translations['en'][key] || key;
-  };
+  return useCallback(
+    (key: keyof typeof translations['en']) => {
+      return translations[lang][key] || translations['en'][key] || key;
+    },
+    [lang]
+  );
 };
