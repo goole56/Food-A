@@ -1,0 +1,3 @@
+## 2025-05-18 - Dynamic Code-Splitting for Heavy Route Dependencies
+**Learning:** In applications utilizing heavy 3D rendering libraries (@react-three/fiber, @react-three/drei, three), mapping components (@vis.gl/react-google-maps), and charting/reporting suites (recharts, jspdf), eagerly loading top-level route pages bloats the initial bundle to >1.36 MB JS. Code-splitting route modules with `React.lazy` splits vendor and page chunks cleanly, reducing initial route chunk size by ~68% (from 1,361 kB to 432 kB JS).
+**Action:** Always dynamic-import heavy feature routes using `React.lazy()` and wrap them in `<Suspense fallback={...}>` at the router boundary.
