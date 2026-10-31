@@ -10,8 +10,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingCart, Plus, Minus, Trash2, Clock, CheckCircle2, ChevronRight, UtensilsCrossed, Info, X, Star, ShoppingBag, Package, Search, Ticket, MapPin, Phone, MessageSquare, RefreshCcw, FileText } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 import { Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 const API_KEY =
   process.env.GOOGLE_MAPS_PLATFORM_KEY ||
@@ -701,25 +699,32 @@ function Orders() {
     navigate('/customer/cart');
   };
 
-  const downloadInvoice = (order: typeof orders[0]) => {
+  // Lazy-load jsPDF and autotable dynamically only when the user triggers an invoice download.
+  // This keeps ~390 kB of PDF generation code out of the critical app chunk.
+  const downloadInvoice = async (order: typeof orders[0]) => {
+    const [{ default: jsPDF }] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ]);
+
     const doc = new jsPDF();
-    
+
     // Header
     doc.setFontSize(22);
     doc.setTextColor(226, 19, 110); // Brand pink
     doc.text('foodpanda', 14, 20);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text('Invoice / E-Receipt', 14, 28);
-    
+
     // Order Details
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     doc.text(`Order ID: #${order.id.slice(0, 8)}`, 14, 40);
     doc.text(`Date: ${new Date(order.createdAt).toLocaleString()}`, 14, 46);
     doc.text(`Customer: ${order.customerName}`, 14, 52);
-    
+
     // Items Table
     const tableData = order.items.map(item => [
       item.quantity.toString(),
@@ -727,7 +732,7 @@ function Orders() {
       `$${item.food.price.toFixed(2)}`,
       `$${(item.food.price * item.quantity).toFixed(2)}`
     ]);
-    
+
     (doc as any).autoTable({
       startY: 60,
       head: [['Qty', 'Item', 'Unit Price', 'Total']],
@@ -736,19 +741,19 @@ function Orders() {
       headStyles: { fillColor: [226, 19, 110] },
       margin: { top: 60 }
     });
-    
+
     // Totals
     const finalY = (doc as any).lastAutoTable.finalY || 60;
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text(`Total Paid: $${order.total.toFixed(2)}`, 14, finalY + 10);
-    
+
     // Footer
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
     doc.text('Thank you for ordering with foodpanda!', 14, finalY + 30);
-    
+
     doc.save(`foodpanda-invoice-${order.id.slice(0, 8)}.pdf`);
   };
 

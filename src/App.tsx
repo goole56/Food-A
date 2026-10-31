@@ -7,7 +7,12 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { CustomerDashboard } from './pages/customer/CustomerDashboard';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
+
+// Lazy-load AdminDashboard so heavy visualization libraries (e.g. recharts)
+// are excluded from the main critical customer bundle and only downloaded on admin access.
+const AdminDashboard = React.lazy(() =>
+  import('./pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard }))
+);
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode, role: 'customer' | 'admin' }) {
   const { user } = useAuth();
@@ -57,7 +62,15 @@ export default function App() {
                 path="admin/*" 
                 element={
                   <ProtectedRoute role="admin">
-                    <AdminDashboard />
+                    <React.Suspense
+                      fallback={
+                        <div className="flex items-center justify-center min-h-[50vh] text-brand-text-muted font-bold text-sm">
+                          Loading Admin Dashboard...
+                        </div>
+                      }
+                    >
+                      <AdminDashboard />
+                    </React.Suspense>
                   </ProtectedRoute>
                 } 
               />
