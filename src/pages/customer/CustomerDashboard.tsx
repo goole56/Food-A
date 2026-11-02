@@ -57,6 +57,19 @@ function FoodMenu() {
   const { user } = useAuth();
   const t = useTranslation(user?.language);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
+  const [modalQuantity, setModalQuantity] = useState(1);
+
+  useEffect(() => {
+    if (!selectedFood) return;
+    setModalQuantity(1);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedFood(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedFood]);
 
   return (
     <div className="space-y-6">
@@ -193,7 +206,12 @@ function FoodMenu() {
       {/* Modal for Food Details (Kept for ordering functionality) */}
       <AnimatePresence>
         {selectedFood && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 pb-0">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="food-modal-title"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 pb-0"
+          >
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -213,14 +231,15 @@ function FoodMenu() {
                 <img src={selectedFood.image} alt={selectedFood.name} className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setSelectedFood(null)}
-                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white transition-colors"
+                  aria-label="Close food details"
+                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink transition-colors"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="p-6 flex-1 overflow-y-auto">
-                <h3 className="text-2xl font-black text-brand-text mb-2">{selectedFood.name}</h3>
+                <h3 id="food-modal-title" className="text-2xl font-black text-brand-text mb-2">{selectedFood.name}</h3>
                 <p className="text-brand-text-muted mb-6 leading-relaxed">{selectedFood.description}</p>
                 
                 <div className="space-y-6">
@@ -269,14 +288,43 @@ function FoodMenu() {
                 </div>
               </div>
 
-              <div className="p-4 sm:p-6 bg-white border-t border-brand-border flex items-center justify-between gap-4">
-                 <div className="font-black text-2xl text-brand-text">
-                   ${selectedFood.price.toFixed(2)}
+              <div className="p-4 sm:p-6 bg-white border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                 <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                   <div className="font-black text-2xl text-brand-text">
+                     ${(selectedFood.price * modalQuantity).toFixed(2)}
+                   </div>
+
+                   {/* Quantity Stepper */}
+                   <div className="flex items-center gap-2 bg-brand-bg rounded-xl p-1 border border-brand-border" role="group" aria-label="Item quantity">
+                     <button
+                       type="button"
+                       aria-label="Decrease quantity"
+                       disabled={modalQuantity <= 1}
+                       onClick={() => setModalQuantity(prev => Math.max(1, prev - 1))}
+                       className="p-1.5 sm:p-2 rounded-lg hover:bg-brand-card text-brand-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                     >
+                       <Minus size={16} />
+                     </button>
+                     <span className="font-bold w-6 text-center text-sm tabular-nums" aria-live="polite">
+                       {modalQuantity}
+                     </span>
+                     <button
+                       type="button"
+                       aria-label="Increase quantity"
+                       onClick={() => setModalQuantity(prev => prev + 1)}
+                       className="p-1.5 sm:p-2 rounded-lg hover:bg-brand-card text-brand-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                     >
+                       <Plus size={16} />
+                     </button>
+                   </div>
                  </div>
+
                  <Button3D onClick={() => {
-                   addToCart(selectedFood);
+                   for (let i = 0; i < modalQuantity; i++) {
+                     addToCart(selectedFood);
+                   }
                    setSelectedFood(null);
-                 }} className="flex-1">
+                 }} className="w-full sm:flex-1">
                    <Plus size={18} /> {t('addToCart')}
                  </Button3D>
               </div>
