@@ -10,8 +10,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingCart, Plus, Minus, Trash2, Clock, CheckCircle2, ChevronRight, UtensilsCrossed, Info, X, Star, ShoppingBag, Package, Search, Ticket, MapPin, Phone, MessageSquare, RefreshCcw, FileText } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 import { Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 const API_KEY =
   process.env.GOOGLE_MAPS_PLATFORM_KEY ||
@@ -701,8 +699,17 @@ function Orders() {
     navigate('/customer/cart');
   };
 
-  const downloadInvoice = (order: typeof orders[0]) => {
+  // Bolt Optimization: Dynamically load jspdf and jspdf-autotable on demand.
+  // jspdf and its transitive dependencies (html2canvas, purify) add ~420kB+ to the bundle.
+  // Deferring this load until the user actually requests an invoice keeps the initial
+  // customer route bundle lightweight and speeds up first contentful paint.
+  const downloadInvoice = async (order: typeof orders[0]) => {
+    const [{ default: jsPDF }, autotableModule] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ]);
     const doc = new jsPDF();
+    const autoTableFn = autotableModule.default || (doc as any).autoTable;
     
     // Header
     doc.setFontSize(22);
@@ -728,14 +735,16 @@ function Orders() {
       `$${(item.food.price * item.quantity).toFixed(2)}`
     ]);
     
-    (doc as any).autoTable({
-      startY: 60,
-      head: [['Qty', 'Item', 'Unit Price', 'Total']],
-      body: tableData,
-      theme: 'striped',
-      headStyles: { fillColor: [226, 19, 110] },
-      margin: { top: 60 }
-    });
+    if (typeof autoTableFn === 'function') {
+      autoTableFn(doc, {
+        startY: 60,
+        head: [['Qty', 'Item', 'Unit Price', 'Total']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: { fillColor: [226, 19, 110] },
+        margin: { top: 60 }
+      });
+    }
     
     // Totals
     const finalY = (doc as any).lastAutoTable.finalY || 60;
