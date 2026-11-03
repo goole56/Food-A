@@ -58,6 +58,17 @@ function FoodMenu() {
   const t = useTranslation(user?.language);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
 
+  useEffect(() => {
+    if (!selectedFood) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedFood(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedFood]);
+
   return (
     <div className="space-y-6">
       {/* B. Main Service Selection Cards */}
@@ -203,6 +214,9 @@ function FoodMenu() {
             />
             
             <motion.div 
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="food-modal-title"
               initial={{ opacity: 0, y: "100%" }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: "100%" }}
@@ -212,15 +226,18 @@ function FoodMenu() {
               <div className="relative h-64 w-full">
                 <img src={selectedFood.image} alt={selectedFood.name} className="w-full h-full object-cover" />
                 <button 
+                  type="button"
                   onClick={() => setSelectedFood(null)}
-                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white transition-colors"
+                  aria-label="Close dialog"
+                  title="Close dialog (Esc)"
+                  className="absolute top-4 right-4 p-2 text-brand-text bg-white/80 backdrop-blur-md rounded-full shadow-md hover:bg-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="p-6 flex-1 overflow-y-auto">
-                <h3 className="text-2xl font-black text-brand-text mb-2">{selectedFood.name}</h3>
+                <h3 id="food-modal-title" className="text-2xl font-black text-brand-text mb-2">{selectedFood.name}</h3>
                 <p className="text-brand-text-muted mb-6 leading-relaxed">{selectedFood.description}</p>
                 
                 <div className="space-y-6">
