@@ -1,0 +1,3 @@
+## 2025-05-14 - Route & Heavy Feature Code Splitting in Vite / React
+**Learning:** Admin-only visualization libraries (`recharts`) and infrequently used utility libraries (`jspdf`, `jspdf-autotable`, `html2canvas`) were previously statically imported into the root and customer pages, ballooning the initial bundle to >1.36 MB (>418 kB gzipped). Dynamically importing `AdminDashboard` and splitting `jspdf` on demand reduced the entry bundle down to 536 kB (163 kB gzipped) — a ~61% payload reduction for initial customer loads.
+**Action:** When adding heavy chart libraries or PDF/export generators, always load them dynamically via `React.lazy` or dynamic `import()` within the trigger handler so standard customers never download them upfront.

@@ -7,7 +7,11 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { CustomerDashboard } from './pages/customer/CustomerDashboard';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
+
+// Bolt ⚡ Optimization: Lazy-load AdminDashboard so recharts & admin features don't bloat the customer bundle
+const AdminDashboard = React.lazy(() =>
+  import('./pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard }))
+);
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode, role: 'customer' | 'admin' }) {
   const { user } = useAuth();
@@ -57,7 +61,15 @@ export default function App() {
                 path="admin/*" 
                 element={
                   <ProtectedRoute role="admin">
-                    <AdminDashboard />
+                    <React.Suspense
+                      fallback={
+                        <div className="flex items-center justify-center min-h-[50vh]">
+                          <div className="w-8 h-8 border-4 border-brand-pink border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      }
+                    >
+                      <AdminDashboard />
+                    </React.Suspense>
                   </ProtectedRoute>
                 } 
               />
