@@ -30,28 +30,35 @@ export function Layout() {
             
             {/* Left side: Brand (Desktop) & Location */}
             <div className="flex items-center gap-4 sm:gap-8">
-              <div 
-                className="hidden sm:flex items-center gap-2 cursor-pointer group"
+              <button
+                type="button"
+                className="hidden sm:flex items-center gap-2 text-left group rounded-xl p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                 onClick={() => navigate('/')}
+                aria-label="foodpanda home"
               >
                 <div className="p-1.5 bg-brand-pink rounded-lg shadow-sm group-hover:scale-105 transition-transform">
                   <ChefHat size={24} className="text-white drop-shadow-sm" />
                 </div>
                 <div className="flex flex-col">
-                  <h1 className="text-xl font-black text-brand-pink tracking-tight leading-none">foodpanda</h1>
+                  <span className="text-xl font-black text-brand-pink tracking-tight leading-none">foodpanda</span>
                 </div>
-              </div>
+              </button>
 
               {/* Location Selector */}
               {user?.role === 'customer' && (
-                <div className="flex items-center gap-1.5 cursor-pointer hover:bg-brand-card py-1.5 px-2 -ml-2 rounded-lg transition-colors">
-                  <MapPin size={20} className="text-brand-pink" />
+                <button
+                  type="button"
+                  onClick={() => navigate('/customer/addresses')}
+                  aria-label="Change delivery address, currently delivering to 123 Premium Street, NY"
+                  className="flex items-center gap-1.5 hover:bg-brand-card py-1.5 px-2 -ml-2 rounded-lg transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                >
+                  <MapPin size={20} className="text-brand-pink" aria-hidden="true" />
                   <div className="flex flex-col max-w-[150px] sm:max-w-[200px]">
                     <span className="text-[10px] font-bold text-brand-pink uppercase tracking-wider">Delivering to</span>
                     <span className="text-sm font-bold text-brand-text truncate">123 Premium Street, NY</span>
                   </div>
-                  <ChevronDown size={16} className="text-brand-pink ml-1" />
-                </div>
+                  <ChevronDown size={16} className="text-brand-pink ml-1" aria-hidden="true" />
+                </button>
               )}
             </div>
 
@@ -61,17 +68,28 @@ export function Layout() {
                 <>
                   {user.role === 'customer' && (
                     <>
-                      <button className="p-2 text-brand-text hover:text-brand-pink transition-colors relative">
-                        <Heart size={24} />
+                      <button
+                        type="button"
+                        aria-label="Favorites"
+                        title="Favorites"
+                        className="p-2 text-brand-text hover:text-brand-pink rounded-xl transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                      >
+                        <Heart size={24} aria-hidden="true" />
                       </button>
                       
                       <button 
+                        type="button"
                         onClick={() => navigate('/customer/cart')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors relative"
+                        aria-label={totalItems > 0 ? `Shopping cart, ${totalItems} items` : 'Shopping cart is empty'}
+                        title="Shopping cart"
+                        className="p-2 text-brand-text hover:text-brand-pink rounded-xl transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                       >
-                        <ShoppingBag size={24} />
+                        <ShoppingBag size={24} aria-hidden="true" />
                         {totalItems > 0 && (
-                          <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-pink text-[10px] font-bold text-white shadow-sm">
+                          <span
+                            aria-hidden="true"
+                            className="absolute top-0 right-0 -mt-1 -mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-pink text-[10px] font-bold text-white shadow-sm"
+                          >
                             {totalItems}
                           </span>
                         )}
@@ -80,16 +98,18 @@ export function Layout() {
                       {/* Desktop specific extra nav items */}
                       <div className="hidden sm:flex items-center gap-4 border-l border-brand-border pl-6 ml-2">
                         <button 
+                          type="button"
                           onClick={() => navigate('/customer/orders')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink rounded-lg p-1 -m-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                         >
-                          <FileText size={20} /> Orders
+                          <FileText size={20} aria-hidden="true" /> Orders
                         </button>
                         <button 
+                          type="button"
                           onClick={() => navigate('/customer/profile')}
-                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink transition-colors"
+                          className="flex items-center gap-2 text-brand-text font-semibold hover:text-brand-pink rounded-lg p-1 -m-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                         >
-                          <UserCircle size={20} /> Profile
+                          <UserCircle size={20} aria-hidden="true" /> Profile
                         </button>
                       </div>
                     </>
@@ -98,21 +118,27 @@ export function Layout() {
                   {user.role === 'admin' && (
                     <>
                       <div className="flex items-center gap-2 px-4 py-2 bg-brand-card rounded-full border border-brand-border mr-2">
-                        <UserCircle size={20} className="text-brand-text-muted" />
+                        <UserCircle size={20} className="text-brand-text-muted" aria-hidden="true" />
                         <span className="text-sm font-medium">{user.name}</span>
                         <span className="text-xs px-2 py-0.5 bg-brand-pink/10 text-brand-pink rounded-full ml-2 uppercase font-bold">Admin</span>
                       </div>
                       <button 
+                        type="button"
                         onClick={() => navigate('/admin')}
-                        className="p-2 text-brand-text hover:text-brand-pink transition-colors"
+                        aria-label="Admin Dashboard"
+                        title="Admin Dashboard"
+                        className="p-2 text-brand-text hover:text-brand-pink rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                       >
-                        <LayoutDashboard size={24} />
+                        <LayoutDashboard size={24} aria-hidden="true" />
                       </button>
                       <button 
+                        type="button"
                         onClick={handleLogout}
-                        className="p-2 text-brand-text-muted hover:text-red-500 transition-colors"
+                        aria-label="Log Out"
+                        title="Log Out"
+                        className="p-2 text-brand-text-muted hover:text-red-500 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                       >
-                        <LogOut size={24} />
+                        <LogOut size={24} aria-hidden="true" />
                       </button>
                     </>
                   )}
