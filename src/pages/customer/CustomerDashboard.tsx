@@ -495,15 +495,23 @@ function Cart() {
                <>
                  <div className="flex gap-2">
                    <input 
+                     id="promo-code-input"
+                     aria-label="Enter voucher code"
                      type="text" 
                      value={promoCode}
                      onChange={(e) => setPromoCode(e.target.value)}
                      placeholder="Enter voucher code" 
-                     className="flex-1 bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-pink text-brand-text uppercase font-bold tracking-wider placeholder:normal-case placeholder:tracking-normal placeholder:font-normal" 
+                     className="flex-1 bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-pink focus-visible:ring-2 focus-visible:ring-brand-pink/50 text-brand-text uppercase font-bold tracking-wider placeholder:normal-case placeholder:tracking-normal placeholder:font-normal"
                    />
-                   <button onClick={handleApplyPromo} className="bg-brand-text text-brand-bg px-4 py-2 rounded-xl text-sm font-bold hover:bg-brand-pink hover:text-white transition-colors">Apply</button>
+                   <button
+                     onClick={handleApplyPromo}
+                     disabled={!promoCode.trim()}
+                     className="bg-brand-text text-brand-bg px-4 py-2 rounded-xl text-sm font-bold hover:bg-brand-pink hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-brand-text disabled:hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+                   >
+                     Apply
+                   </button>
                  </div>
-                 {voucherError && <p className="text-red-500 text-xs font-bold mt-2">{voucherError}</p>}
+                 {voucherError && <p role="alert" className="text-red-500 text-xs font-bold mt-2">{voucherError}</p>}
                  
                  <div className="mt-4">
                    <p className="text-xs font-bold text-brand-text-muted mb-2">Available Offers:</p>
@@ -512,7 +520,9 @@ function Cart() {
                        <button 
                          key={v.code} 
                          onClick={() => setPromoCode(v.code)}
-                         className="text-[10px] bg-brand-pink/5 border border-brand-pink/20 text-brand-pink px-2 py-1 rounded-md font-bold hover:bg-brand-pink/10 transition-colors uppercase tracking-wider"
+                         title={`${v.code}: ${v.title}`}
+                         aria-label={`Apply coupon ${v.code} for ${v.title}`}
+                         className="text-[10px] bg-brand-pink/5 border border-brand-pink/20 text-brand-pink px-2 py-1 rounded-md font-bold hover:bg-brand-pink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink transition-colors uppercase tracking-wider"
                        >
                          {v.code}
                        </button>
@@ -521,12 +531,17 @@ function Cart() {
                  </div>
                </>
              ) : (
-               <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3">
+               <div role="status" aria-live="polite" className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3">
                  <div>
                    <span className="text-green-700 font-bold text-sm block">{appliedVoucher.code}</span>
                    <span className="text-green-600 text-xs font-medium">{appliedVoucher.title}</span>
                  </div>
-                 <button onClick={handleRemovePromo} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors">
+                 <button
+                   onClick={handleRemovePromo}
+                   aria-label="Remove applied promo code"
+                   title="Remove promo code"
+                   className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                 >
                    <Trash2 size={16} />
                  </button>
                </div>
