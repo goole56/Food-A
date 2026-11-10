@@ -1,0 +1,3 @@
+## 2025-05-18 - Accessible Icon Buttons and Navigation Badges
+**Learning:** Icon-only navigation buttons with dynamic count badges (like a shopping cart) need both a dynamic `aria-label` describing full state (e.g. "Shopping cart, 3 items" vs "Shopping cart, empty") and screen-reader accessible text (`sr-only`) on badges, along with explicit `focus-visible` ring indicators for keyboard users.
+**Action:** When designing header or bottom navigation icon buttons, always supply context-aware `aria-label`, semantic `title` attributes, `aria-current="page"` on active routes, and dedicated `focus-visible` styling.
