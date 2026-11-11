@@ -1,0 +1,3 @@
+## 2025-05-14 - Dynamic Context in Quantity Stepper & Cart Item Controls
+**Learning:** Cart item controls that morph from a decrement action to a deletion action when quantity reaches 1 (`item.quantity === 1 ? <Trash2 /> : <Minus />`) require dynamic accessible labels containing both the item name and the exact consequence ("Remove [Item] from cart" vs "Decrease quantity of [Item]"). Static "Decrease" labels fail screen reader users who unexpectedly delete an item on activation.
+**Action:** Always provide condition-aware `aria-label` and `title` attributes incorporating the specific target entity name on dual-purpose decrement/remove buttons.
