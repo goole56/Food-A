@@ -469,14 +469,18 @@ function Cart() {
                   <div className="flex items-center gap-2 sm:gap-3 bg-brand-bg rounded-xl p-1 border border-brand-border">
                     <button 
                       onClick={() => removeFromCart(item.food.id)}
-                      className="p-1 sm:p-2 hover:bg-brand-card rounded-lg transition-colors text-brand-text"
+                      aria-label={item.quantity === 1 ? `Remove ${item.food.name} from cart` : `Decrease quantity of ${item.food.name}`}
+                      title={item.quantity === 1 ? `Remove ${item.food.name} from cart` : `Decrease quantity of ${item.food.name}`}
+                      className="p-1 sm:p-2 hover:bg-brand-card rounded-lg transition-colors text-brand-text focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                     >
                       {item.quantity === 1 ? <Trash2 size={14} className="text-red-400" /> : <Minus size={14} />}
                     </button>
                     <span className="font-bold w-4 text-center text-sm">{item.quantity}</span>
                     <button 
                       onClick={() => addToCart(item.food)}
-                      className="p-1 sm:p-2 hover:bg-brand-card rounded-lg transition-colors text-brand-text"
+                      aria-label={`Increase quantity of ${item.food.name}`}
+                      title={`Increase quantity of ${item.food.name}`}
+                      className="p-1 sm:p-2 hover:bg-brand-card rounded-lg transition-colors text-brand-text focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                     >
                       <Plus size={14} />
                     </button>
@@ -526,7 +530,12 @@ function Cart() {
                    <span className="text-green-700 font-bold text-sm block">{appliedVoucher.code}</span>
                    <span className="text-green-600 text-xs font-medium">{appliedVoucher.title}</span>
                  </div>
-                 <button onClick={handleRemovePromo} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors">
+                 <button
+                   onClick={handleRemovePromo}
+                   aria-label="Remove promo code"
+                   title="Remove promo code"
+                   className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                 >
                    <Trash2 size={16} />
                  </button>
                </div>
